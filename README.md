@@ -6,29 +6,32 @@ This code will save a lot of disk space, increase the longevity of the hard disk
 
 ## Prerequisites
 Python 3.7 or higher
+
 OpenCV, PyTorch, and keyboard libraries
+
 Access credentials (username and password) for the RTSP cameras
+
 RTSP cameras with URLs for low and high-resolution video streams. To find the RTSP address of the camera domnload [Onvif Device Manager](https://onvif-device-manager.software.informer.com/download/?ca1a3192). 
 Keep Low resolution profile in 1 FPS to reduce GPU and CPU usage
 
 ## Installation
 To install the required libraries, run the following command in your terminal:
-'''
+```
 pip install -r requirements.txt
-'''
+```
 
 To install pytorch gpu,run the following command in your terminal:
 
 For conda
 
-'''
+```
 conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
-'''
+```
 
 For pip
-'''
+```
 pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-'''
+```
 
 For more information about [pytorch](https://pytorch.org/).
 
