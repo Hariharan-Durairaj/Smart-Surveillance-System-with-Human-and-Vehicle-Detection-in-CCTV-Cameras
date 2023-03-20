@@ -20,6 +20,7 @@ pip install -r requirements.txt
 To install pytorch gpu,run the following command in your terminal:
 
 For conda
+
 '''
 conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
 '''
