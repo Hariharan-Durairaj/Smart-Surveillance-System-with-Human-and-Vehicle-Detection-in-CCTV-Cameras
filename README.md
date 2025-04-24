@@ -1,52 +1,152 @@
-# Enhanced Surveillance Systems with Human and Object Detection in IP Cameras
+# Smart Surveillance System with Human and Vehicle Detection in CCTV Cameras
 
-This script uses the YOLOv5m model to detect objects in a low-resolution video stream obtained via RTSP protocol. If the model detects a person or car, it sets a flag to start recording a high-resolution video stream using RTSP of the high-resolution profile. Then recorded videos are saved in a directory called "motion_detection".
+## Project Overview
 
-This code will save a lot of disk space, increase the longevity of the hard disk, and decrease the number of false alarms compared to a normal camera using motion detection. 
+This project uses **YOLOv5** to perform real-time human and vehicle detection from an **RTSP stream** captured via an IP camera. The video stream is processed to detect humans and vehicles, and based on detection, the system saves the video at different frame rates. The key features are:
 
-## Prerequisites
-Python 3.7 or higher
+- **Low FPS Recording (1 FPS)** when there are **no detections** to save disk space.
+- **High FPS Recording (25 FPS)** when a **detection is found** (i.e., human or vehicle).
+- **Separate video files** are saved for detection and no-detection states, each with timestamps for easy tracking.
 
-OpenCV, PyTorch, and keyboard libraries
+### Key Features:
+- Detects **human** and **vehicle** (car, motorcycle, bus, truck) using YOLOv5.
+- Saves video in **separate files** based on detection.
+  - **No detection**: Saved at **1 FPS** to save storage.
+  - **Detection**: Saved at **25 FPS** for clear visibility.
+- Supports **real-time video display** with detection boxes overlayed on the frames.
+- Outputs video files with **timestamps** and a specific naming convention indicating detection.
 
-Access credentials (username and password) for the RTSP cameras
+## Screenshot Samples
 
-RTSP cameras with URLs for low and high-resolution video streams. To find the RTSP address of the camera domnload [Onvif Device Manager](https://onvif-device-manager.software.informer.com/download/?ca1a3192). 
-Keep Low resolution profile in 1 FPS to reduce GPU and CPU usage
+Here are some sample screenshots demonstrating the output:
 
-## Installation
-To install the required libraries, run the following command in your terminal:
-```
-pip install -r requirements.txt
-```
+- **Detection in Video**:  
 
-To install pytorch gpu,run the following command in your terminal:
+![alt text](Detection.png)
+  
 
-For conda
+- **Saved Video Files**:  
 
-```
-conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
-```
+![alt text](FIle_naming.png)
+ 
 
-For pip
-```
-pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-```
+## Installation Instructions
 
-For more information about [pytorch](https://pytorch.org/).
+You can set up the environment using **conda** or **pip**. Below are the steps to install the necessary dependencies.
 
-You can clone this repository to obtain the script and sample RTSP URLs.
+### Using Conda:
+1. Create a new conda environment:
+   ```bash
+   conda create --name detection-env python=3.8
+   ```
 
+2. Activate the environment:
+   ```bash
+   conda activate detection-env
+   ```
 
+3. Install required dependencies:
+   ```bash
+   conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch
+   conda install -c conda-forge opencv
+   conda install numpy
+   conda install pandas
+   conda install ultralytics
+   ```
 
+### Using Pip:
 
-## Usage
+1. Install dependencies using pip:
+   ```bash
+   pip install torch torchvision torchaudio
+   pip install opencv-python
+   pip install numpy
+   pip install pandas
+   pip install ultralytics
+   ```
 
-Open the nodebook through any application like jupiter, vs code
+2. Download YOLOv5 model weights (this is done automatically by `torch.hub.load` in the code).
 
-The script will open two threads - one for detecting objects in low resolution and the other for recording high-resolution video streams. You can change the RTSP URLs, display flag, recording timeout, and output directory in the script's global variables.
+### Using ```requirements.txt```:
 
-While running the script, you can press the "q" key to stop the program and save any ongoing recordings.
+1. Go to the folder:
+   ```bash
+   cd Smart-Surveillance-System-with-Human-and-Vehicle-Detection-in-CCTV-Cameras
+   ```
 
-## Acknowledgments
-This script uses the YOLOv5m model from the Ultralytics repository and the OpenCV library for video processing.
+2. Install dependencies using ```requirements.txt```:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+## How the Code Works
+
+### Video Stream Processing
+1. **RTSP Stream**:  
+   The script connects to an **IP camera** using the RTSP stream URL and grabs frames for processing.
+
+2. **Detection Loop**:  
+   Every frame is passed through the **YOLOv5 model** to detect objects like humans, cars, motorcycles, buses, and trucks.
+   - If a detection is found, the video is saved at **25 FPS** with detection boxes overlayed on the video.
+   - If no detection is found, the video is saved at **1 FPS** to save storage space.
+
+3. **Saving Video**:  
+   Video frames are saved into **separate files**:
+   - Files with **"Alert!!!"** in the name indicate that detections were made (i.e., humans or vehicles).
+   - Files without **"Alert!!!"** are saved at **1 FPS** (i.e., when there are no detections).
+
+4. **Grace Period**:  
+   After detection, the system will continue saving at high FPS for a **grace period of 30 seconds** (to capture events after detection), then revert to low FPS if no further detection occurs.
+
+### Video File Naming Convention:
+- Files with detection will have names like:
+  ```
+  recording_2025-04-24_14-20-30_Alert!!!.mp4
+  ```
+- Files with no detection will have names like:
+  ```
+  recording_2025-04-24_14-20-30.mp4
+  ```
+
+### Real-Time Detection and Display
+- The video is displayed in real-time with detection boxes drawn on the frames:
+  - **Green boxes** indicate detected humans or vehicles.
+  - Detection labels (e.g., "person", "car") are shown next to the bounding boxes.ppytho
+
+## How to Run the Code
+
+1. **Clone the repository** (if applicable):
+   ```bash
+   git clone https://github.com/Hariharan-Durairaj/Smart-Surveillance-System-with-Human-and-Vehicle-Detection-in-CCTV-Cameras.git
+   ```
+
+2. **Edit the ```smart_surveillance.py```**:
+   ```bash
+   # RTSP stream URL and credentials
+   # Replace 'username', 'password', and 'ip_address' with your actual RTSP stream credentials
+   RTSP_URL = 'rtsp://username:password@ip_address/stream'
+   ```
+    If you don't know the url for the stream download [Onvif Device Manager](https://sourceforge.net/projects/onvifdm/files/latest/download). In this software there is an option to enter the username and password for the IP camera. Which can then be used to see the live view of the camera including the stream URL. Sometime you might need to manually change the URL, to add the username and password like this:  ```rtsp://username:password@url_from_onvif_device_manager```.  
+
+3. Monitor the **real-time video display** and check the **recordings** in the specified directory (`recordings/`).
+
+## File Saving Mechanism
+
+The videos are saved as `.mp4` files in the `recordings/` directory. The file names will include the timestamp of the recording, and videos with detections will include "Alert!!!" in the name.
+
+### Example:
+- `ALERT!!!_record_20250424_183242_15fps.mp4` (contains detection)
+- `record_20250424_183142_1fps.mp4` (no detection)
+
+The code saves recordings in chunks of **1 hour** (or the specified `CHUNK_DURATION`) to avoid creating excessively large files.
+
+## License
+
+This project is licensed under the MIT License.
+
+---
+
+## Troubleshooting
+
+- **RTSP stream errors**: Ensure the IP camera RTSP URL is correct and accessible from your machine.
+- **Detection issues**: If detection is too slow or inaccurate, consider switching to a larger model (`yolov5m` or `yolov5l`) or fine-tuning on your specific dataset.
