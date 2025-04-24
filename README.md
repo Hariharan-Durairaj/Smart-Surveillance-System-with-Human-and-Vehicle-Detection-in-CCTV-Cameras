@@ -22,12 +22,12 @@ Here are some sample screenshots demonstrating the output:
 
 - **Detection in Video**:  
 
-![alt text](images\\Detection.png)
+![alt text](images/Detection.png)
   
 
 - **Saved Video Files**:  
 
-![alt text](images\\FIle_naming.png)
+![alt text](images/FIle_naming.png)
  
 
 ## Installation Instructions
